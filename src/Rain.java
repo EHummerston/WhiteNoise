@@ -48,6 +48,7 @@ public class Rain {
 	final static int[] fourFour = {1,4,8,4,1,4,8,4,1,4,8,4,1,4,8,4};
 	final static int[] swing = {1,0,2,1,0,3,1,0,2,1,0,3};
 	final static int[] swing2 = {1,0,2,1,0,3};
+	final static int[] canonTime = {1,8,4,8,2,8,4,8};
 
 	final static Chord[] frun = {
 		new Chord(69,new int[] {0,4,7}),
@@ -99,6 +100,18 @@ public class Rain {
 		new Chord(70,new int[] {0,4,7}),
 		new Chord(70,new int[] {0,4,7}),
 	};
+	
+	final static Chord[] canon = {
+			new Chord(74,new int[] {0,4,7}),	// D Maj
+			new Chord(69,new int[] {0,4,7}),	// A Maj
+			new Chord(71,new int[] {0,3,7}),	// B Min	
+			new Chord(66,new int[] {0,3,7}),	// F# min
+
+			new Chord(67,new int[] {0,4,7}),	// G Maj
+			new Chord(74,new int[] {0,4,7}),	// D Maj
+			new Chord(67,new int[] {0,4,7}),	// G Maj
+			new Chord(69,new int[] {0,4,7}),	// A Maj
+		};
 
 
 	public static void main(String[] args) {
@@ -350,7 +363,7 @@ public class Rain {
 						g2d.drawString(txt,0,screenHeight/2);
 
 						txt = new String();
-						txt+="1 and 2 change styles";
+						txt+="1 - 4 change styles";
 						g2d.drawString(txt,0,screenHeight/2+g.getFontMetrics().getHeight());
 
 						helpAlpha-=(float)1/TARGET_FPS/4;
@@ -389,6 +402,9 @@ public class Rain {
 				break;
 			case KeyEvent.VK_3:
 				changeToWay();
+				break;
+			case KeyEvent.VK_4:
+				changeToCanon();
 				break;
 			case KeyEvent.VK_R:
 				drawFPS=!drawFPS;
@@ -456,7 +472,14 @@ public class Rain {
 
 	public void changeToWay()
 	{
+		
 		phatBeats = new Signature(swing2, 80, way, System.nanoTime());
 	}
+	
+	public void changeToCanon()
+	{
+		phatBeats = new Signature(canonTime, 30, canon, System.nanoTime());
+	}
+
 
 }

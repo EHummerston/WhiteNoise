@@ -16,17 +16,14 @@ A time signature is used in White Noise to decide *when* to play notes.
 
 We represent a time signature with a list of evenly-spaced segments of a [bar](https://en.wikipedia.org/wiki/Bar_(music)).  
 Example:  
-
 `_` `_` `_` `_`
 
 In each entry, a non-zero value represents the possibility that a note can be played in that space of time.  
 Example: ([Swing](https://en.wikipedia.org/wiki/Swing_(jazz_performance_style)#Swing_as_a_rhythmic_style) Feel)  
-
 `■` `_` `■` `■` `_` `■` `■` `_` `■` `■` `_` `■`
 
 Finally each entry has a value indicating the *likelihood* that a note should be played in that space. (Lower values have a higher chance of being played.)  
 Example:  
-
 `1` `_` `3` `1` `_` `3` `1` `_` `3` `1` `_` `3`
 
 ### Chords
@@ -46,8 +43,9 @@ These notes are then offset by some number of octaves (multiples of twelve in MI
 
 A single time signature for a piece is fine, but only one chord would be boring. White Noise uses [Chord Progressions](https://en.wikipedia.org/wiki/Chord_progression) to change between chords and therefore available pitches. It plays through one iteration of the **Time Signature** bar, using notes from the first **Chord** in the progression, and then repeats the bar again with the next chord.
 
-So finally we have a **Piece** which is composed of a **Time Signature**, some **Chords** and a **Chord Progression**.  
-Example: (*Pachebel's Canon in D*)
+So finally we have a **Piece** which is composed of a **Time Signature**, some **Chords** and a **Chord Progression**.
+
+### Example: (*Pachebel's Canon in D*)
 
 #### Time Signature
 
