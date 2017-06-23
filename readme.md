@@ -17,17 +17,17 @@ A time signature is used in White Noise to decide *when* to play notes.
 We represent a time signature with a list of evenly-spaced segments of a [bar](https://en.wikipedia.org/wiki/Bar_(music)).  
 Example:  
 
-`_` | `_` | `_` | `_`
+`_` `_` `_` `_`
 
 In each entry, a non-zero value represents the possibility that a note can be played in that space of time.  
 Example: ([Swing](https://en.wikipedia.org/wiki/Swing_(jazz_performance_style)#Swing_as_a_rhythmic_style) Feel)  
 
-`■` | `_` | `■` | `■` | `_` | `■` | `■` | `_` | `■` | `■` | `_` | `■`
+`■` `_` `■` `■` `_` `■` `■` `_` `■` `■` `_` `■`
 
 Finally each entry has a value indicating the *likelihood* that a note should be played in that space. (Lower values have a higher chance of being played.)  
 Example:  
 
-`1` | `_` | `3` | `1` | `_` | `3` | `1` | `_` | `3` | `1` | `_` | `3`
+`1` `_` `3` `1` `_` `3` `1` `_` `3` `1` `_` `3`
 
 ### Chords
 
@@ -49,13 +49,13 @@ A single time signature for a piece is fine, but only one chord would be boring.
 So finally we have a **Piece** which is composed of a **Time Signature**, some **Chords** and a **Chord Progression**.  
 Example: (*Pachebel's Canon in D*)
 
-**Time Signature**  
+#### Time Signature
 
-`1` | `8` | `4` | `8` | `4` | `8` | `4` | `8`
+`1` `8` `4` `8` `2` `8` `4` `8`
 
-**Chords**  
+#### Chords
 
-Label | root | interval 1 | interval 2
+Label | Root | Interval 1 | Interval 2
 --- | --- | --- | ---
 DMaj | 2 | 4 | 7
 AMaj | 9 | 4 | 7
@@ -63,6 +63,6 @@ Bmin | 11 | 3 | 7
 F#min | 6 | 3 | 7
 GMaj | 7 | 4 | 7
 
-**Chord Progression**  
+#### Chord Progression
 
-DMaj | AMaj | Bmin | F#min | GMaj | DMaj | GMaj | AMaj
+DMaj, AMaj, Bmin, F#min, GMaj, DMaj, GMaj, AMaj
