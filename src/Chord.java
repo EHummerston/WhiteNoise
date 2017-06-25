@@ -4,23 +4,19 @@ public class Chord {
 	private int pedal;
 	private int[] intervals;
 
-	public Chord(int baseNote, int[] intervals)
-	{
+	public Chord(int baseNote, int[] intervals) {
 		this.pedal = baseNote;
 		this.intervals = intervals;
 	}
 
-	public Chord(char pedal, char accid, int[] intervals)
-	{
-		int base = (int)accid;
+	public Chord(char pedal, char accid, int[] intervals) {
+		int base = (int) accid;
 
 		base -= 65;
-		if(base > 26)
-		{
+		if (base > 26) {
 			base -= 32;
 		}
-		switch(accid)
-		{
+		switch (accid) {
 		default:
 			break;
 		case '#':
@@ -30,73 +26,68 @@ public class Chord {
 			base--;
 			break;
 		}
-		base = base%12;
+		base = base % 12;
 
-		base+=69;
+		base += 69;
 		this.pedal = base;
-		
+
 		this.intervals = intervals;
 	}
-	
-	public int getChordLength()
-	{
+
+	public int getChordLength() {
 		return intervals.length;
 	}
-	
-	public int getInterval(int id)
-	{
+
+	public int getInterval(int id) {
 		return pedal + intervals[id];
 	}
-	
-	public static String intToNote(int pitch)
-	{
+
+	public static String intToNote(int pitch) {
 		String strang = new String();
-		switch(pitch % 12)
-		{
+		switch (pitch % 12) {
 		case 0:
-			strang +="C";
+			strang += "C";
 			break;
 		case 1:
-			strang +="C#";
+			strang += "C#";
 			break;
 		case 2:
-			strang +="D";
+			strang += "D";
 			break;
 		case 3:
-			strang +="Eb";
+			strang += "Eb";
 			break;
 		case 4:
-			strang +="E";
+			strang += "E";
 			break;
 		case 5:
-			strang +="F";
+			strang += "F";
 			break;
 		case 6:
-				strang +="F#";
-				break;
+			strang += "F#";
+			break;
 		case 7:
-			strang +="G";
+			strang += "G";
 			break;
 		case 8:
-			strang +="Ab";
+			strang += "Ab";
 			break;
 		case 9:
-			strang +="A";
+			strang += "A";
 			break;
 		case 10:
-			strang +="Bb";
+			strang += "Bb";
 			break;
 		case 11:
-			strang +="B";
+			strang += "B";
 			break;
 		}
-		
+
 		return strang;
 	}
 
-	public void offsetOctave(int offset)
-	{
-		pedal+=12*offset;
+	public void offsetOctave(int offset) {
+		pedal += 12 * offset;
 	}
-	
+
 }

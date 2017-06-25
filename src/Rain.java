@@ -44,63 +44,63 @@ public class Rain {
 	float helpAlpha = 1;
 
 	int instrID = 11;
-	
+
 	final static int[] fourFour = {1,4,8,4,1,4,8,4,1,4,8,4,1,4,8,4};
 	final static int[] swing = {1,0,2,1,0,3,1,0,2,1,0,3};
 	final static int[] swing2 = {1,0,2,1,0,3};
 	final static int[] canonTime = {1,8,4,8,2,8,4,8};
 
 	final static Chord[] frun = {
-		new Chord(69,new int[] {0,4,7}),
-		new Chord(76,new int[] {0,3,7,10}),
-		new Chord(76,new int[] {0,3,7}),
-		new Chord(74,new int[] {0,4,7,14}),
+			new Chord(69,new int[] {0,4,7}),
+			new Chord(76,new int[] {0,3,7,10}),
+			new Chord(76,new int[] {0,3,7}),
+			new Chord(74,new int[] {0,4,7,14}),
 	};
 
 	final static Chord[] way = {
-		new Chord(72,new int[] {0,4,7}),
-		new Chord(72,new int[] {0,4,7}),
-		new Chord(67,new int[] {0,4,7}),
-		new Chord(67,new int[] {0,4,7}),
-		
-		new Chord(65,new int[] {0,4,7}),
-		new Chord(65,new int[] {0,4,7}),
-		new Chord(72,new int[] {0,4,7}),
-		new Chord(72,new int[] {0,4,7}),
-		
-		new Chord(72,new int[] {0,4,7}),
-		new Chord(72,new int[] {0,4,7}),
-		new Chord(67,new int[] {0,4,7}),
-		new Chord(67,new int[] {0,4,7}),
-		
-		new Chord(74,new int[] {0,3,7}),
-		new Chord(74,new int[] {0,3,7}),
-		new Chord(69,new int[] {0,3,7}),
-		new Chord(67,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,4,7}),
+			new Chord(67,new int[] {0,4,7}),
+			new Chord(67,new int[] {0,4,7}),
+
+			new Chord(65,new int[] {0,4,7}),
+			new Chord(65,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,4,7}),
+
+			new Chord(72,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,4,7}),
+			new Chord(67,new int[] {0,4,7}),
+			new Chord(67,new int[] {0,4,7}),
+
+			new Chord(74,new int[] {0,3,7}),
+			new Chord(74,new int[] {0,3,7}),
+			new Chord(69,new int[] {0,3,7}),
+			new Chord(67,new int[] {0,4,7}),
 	};
 
 	final static Chord[] mablas = {
-		new Chord(72,new int[] {0,3,7}),
-		new Chord(72,new int[] {0,3,5,7}),
-		new Chord(72,new int[] {0,3,7}),
-		new Chord(70,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,3,7}),
+			new Chord(72,new int[] {0,3,5,7}),
+			new Chord(72,new int[] {0,3,7}),
+			new Chord(70,new int[] {0,4,7}),
 
-		new Chord(68,new int[] {0,4,7}),
-		new Chord(68,new int[] {0,4,6,7}),
-		new Chord(68,new int[] {0,4,7}),
-		new Chord(67,new int[] {0,3,7}),
+			new Chord(68,new int[] {0,4,7}),
+			new Chord(68,new int[] {0,4,6,7}),
+			new Chord(68,new int[] {0,4,7}),
+			new Chord(67,new int[] {0,3,7}),
 
-		new Chord(65,new int[] {0,3,7}),
-		new Chord(65,new int[] {0,3,5,7}),
-		new Chord(65,new int[] {0,3,7}),
-		new Chord(65,new int[] {0,3,7}),
+			new Chord(65,new int[] {0,3,7}),
+			new Chord(65,new int[] {0,3,5,7}),
+			new Chord(65,new int[] {0,3,7}),
+			new Chord(65,new int[] {0,3,7}),
 
-		new Chord(72,new int[] {0,3,7}),
-		new Chord(72,new int[] {0,3,7}),
-		new Chord(70,new int[] {0,4,7}),
-		new Chord(70,new int[] {0,4,7}),
+			new Chord(72,new int[] {0,3,7}),
+			new Chord(72,new int[] {0,3,7}),
+			new Chord(70,new int[] {0,4,7}),
+			new Chord(70,new int[] {0,4,7}),
 	};
-	
+
 	final static Chord[] canon = {
 			new Chord(74,new int[] {0,4,7}),	// D Maj
 			new Chord(69,new int[] {0,4,7}),	// A Maj
@@ -111,14 +111,12 @@ public class Rain {
 			new Chord(74,new int[] {0,4,7}),	// D Maj
 			new Chord(67,new int[] {0,4,7}),	// G Maj
 			new Chord(69,new int[] {0,4,7}),	// A Maj
-		};
+	};
 
 
 	public static void main(String[] args) {
 
-
 		new Rain();
-
 
 	}
 
@@ -201,7 +199,7 @@ public class Rain {
 					{
 						if(rng.nextDouble()<0.9/(phatBeats.getBeat()))
 						{
-							newRip(i);
+							playNote(i);
 						}
 						break;
 					}
@@ -432,7 +430,7 @@ public class Rain {
 
 	}
 
-	private void newRip(int id)
+	private void playNote(int id)
 	{
 		int octRange = 3;
 		Chord chord = phatBeats.getChord();
@@ -472,10 +470,10 @@ public class Rain {
 
 	public void changeToWay()
 	{
-		
+
 		phatBeats = new Signature(swing2, 80, way, System.nanoTime());
 	}
-	
+
 	public void changeToCanon()
 	{
 		phatBeats = new Signature(canonTime, 30, canon, System.nanoTime());
