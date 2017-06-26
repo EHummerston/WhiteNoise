@@ -228,7 +228,7 @@ public class Rain
 				}
 				else
 				{
-					if (volume < screenWidth * screenHeight)
+					if (volume < (screenWidth * screenHeight))
 					{
 						rocksNShit[i] = new Debris((screenWidth), (screenHeight),
 								screenWidth * screenHeight / 2);
@@ -501,7 +501,6 @@ public class Rain
 	{
 		int octRange = 3;
 		Chord chord = phatBeats.getChord();
-		chord.offsetOctave(0);
 		int note = chord.getInterval(rng.nextInt(chord.getChordLength()));
 		note += 12 * rng.nextInt(octRange);
 		// note+=12*(octRange);
@@ -532,7 +531,7 @@ public class Rain
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Signature} to the "Frun" piece. 
+	 * Changes current {@link Chord} and {@link Signature} to the "Frun" piece.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_FOUR_FOUR
 	 * @see Rain#CHORDS_FRUN

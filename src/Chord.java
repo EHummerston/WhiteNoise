@@ -1,30 +1,56 @@
-
+/**
+ * The {@code Chord} class is a data structure which attempts to represent a
+ * collection of musical pitches. Instances of this class are used in the
+ * {@code ChordProgression} (TODO: update ChordProgression reference) class.
+ * 
+ * @author Edward
+ *
+ */
 public class Chord
 {
 
-	private int		pedal_;
+	private int		root_;
 	private int[]	intervals_;
 
 
 
-	public Chord(int baseNote, int[] intervals)
+	/**
+	 * Constructs the {@code Chord} instance using {@code char}s to interpret the
+	 * root note.
+	 * 
+	 * @param root The MIDI value for the root note. C is 0, each semitone higher
+	 *          is +1.
+	 * @param intervals A list of integers, each indicating how many semitones an
+	 *          interval is above the root note.
+	 */
+	public Chord(int root, int[] intervals)
 	{
-		this.pedal_ = baseNote;
+		this.root_ = root;
 		this.intervals_ = intervals;
 	}
 
 
 
-	public Chord(char pedal, char accid, int[] intervals)
+	/**
+	 * Constructs the {@code Chord} instance using {@code char}s to interpret the
+	 * root note.
+	 * 
+	 * @param pedal The letter of the root note pitch.
+	 * @param accidental The sharp/flat symbol (if any). Use '#' for sharp and 'b'
+	 *          for flat. Any other {@code char} is interpreted as natural.
+	 * @param intervals A list of integers, each indicating how many semitones an
+	 *          interval is above the root note.
+	 */
+	public Chord(char pedal, char accidental, int[] intervals)
 	{
-		int base = (int) accid;
+		int base = (int) accidental;
 
 		base -= 65;
 		if (base > 26)
 		{
 			base -= 32;
 		}
-		switch (accid)
+		switch (accidental)
 		{
 		default:
 			break;
@@ -38,7 +64,7 @@ public class Chord
 		base = base % 12;
 
 		base += 69;
-		this.pedal_ = base;
+		this.root_ = base;
 
 		this.intervals_ = intervals;
 	}
@@ -52,64 +78,71 @@ public class Chord
 
 
 
+	/**
+	 * Returns the MIDI value for a pitch in this chord.
+	 * 
+	 * @param id Indicates which note of the chord to retrieve. {@code 0} will
+	 *          return the root note.
+	 * @return The MIDI value of the intended pitch.
+	 */
 	public int getInterval(int id)
 	{
-		return pedal_ + intervals_[id];
+		return root_ + intervals_[id];
 	}
 
 
 
+	/**
+	 * Converts a MIDI note value to a string.
+	 * 
+	 * @param pitch MIDI value of a pitch.
+	 * @return String of the note's name. It is a capital letter, followed by an
+	 *         accidental if appropriate.
+	 */
 	public static String intToNote(int pitch)
 	{
-		String strang = new String();
+		String outString = new String();
 		switch (pitch % 12)
 		{
 		case 0:
-			strang += "C";
+			outString += "C";
 			break;
 		case 1:
-			strang += "C#";
+			outString += "C#";
 			break;
 		case 2:
-			strang += "D";
+			outString += "D";
 			break;
 		case 3:
-			strang += "Eb";
+			outString += "Eb";
 			break;
 		case 4:
-			strang += "E";
+			outString += "E";
 			break;
 		case 5:
-			strang += "F";
+			outString += "F";
 			break;
 		case 6:
-			strang += "F#";
+			outString += "F#";
 			break;
 		case 7:
-			strang += "G";
+			outString += "G";
 			break;
 		case 8:
-			strang += "Ab";
+			outString += "Ab";
 			break;
 		case 9:
-			strang += "A";
+			outString += "A";
 			break;
 		case 10:
-			strang += "Bb";
+			outString += "Bb";
 			break;
 		case 11:
-			strang += "B";
+			outString += "B";
 			break;
 		}
 
-		return strang;
-	}
-
-
-
-	public void offsetOctave(int offset)
-	{
-		pedal_ += 12 * offset;
+		return outString;
 	}
 
 }
