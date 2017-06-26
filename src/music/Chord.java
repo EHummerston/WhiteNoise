@@ -1,3 +1,5 @@
+package music;
+
 /**
  * The {@code Chord} class is a data structure which attempts to represent a
  * collection of musical pitches. Instances of this class are used in the

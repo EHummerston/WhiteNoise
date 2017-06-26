@@ -1,7 +1,11 @@
+package visuals;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Random;
+
+import music.Rain;
 
 public class Debris
 {

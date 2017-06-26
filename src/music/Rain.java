@@ -1,3 +1,5 @@
+package music;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,6 +14,9 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import visuals.Debris;
+import visuals.Ripple;
 
 /**
  * The White Noise program is an experimental system for generating random
