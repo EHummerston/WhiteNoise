@@ -13,6 +13,13 @@ import javax.sound.midi.Synthesizer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+/**
+ * The White Noise program is an experimental system for generating random
+ * music.
+ * 
+ * @author Edward Hummerston
+ * @version 1.0
+ */
 public class Rain
 {
 
@@ -45,18 +52,19 @@ public class Rain
 
 	int instrID = 11;
 
-	final static int[]	fourFour	=
+	final static int[]	TIME_SIGNATURE_FOUR_FOUR	=
 			{ 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4 };
-	final static int[]	swing			= { 1, 0, 2, 1, 0, 3, 1, 0, 2, 1, 0, 3 };
-	final static int[]	swing2		= { 1, 0, 2, 1, 0, 3 };
-	final static int[]	canonTime	= { 1, 8, 4, 8, 2, 8, 4, 8 };
+	final static int[]	TIME_SIGNATURE_SWING			=
+			{ 1, 0, 2, 1, 0, 3, 1, 0, 2, 1, 0, 3 };
+	final static int[]	TIME_SIGNATURE_SWING_2		= { 1, 0, 2, 1, 0, 3 };
+	final static int[]	TIME_SIGNATURE_CANON			= { 1, 8, 4, 8, 2, 8, 4, 8 };
 
-	final static Chord[] frun = { new Chord(69, new int[] { 0, 4, 7 }),
+	final static Chord[] CHORDS_FRUN = { new Chord(69, new int[] { 0, 4, 7 }),
 			new Chord(76, new int[] { 0, 3, 7, 10 }),
 			new Chord(76, new int[] { 0, 3, 7 }),
 			new Chord(74, new int[] { 0, 4, 7, 14 }), };
 
-	final static Chord[] way = { new Chord(72, new int[] { 0, 4, 7 }),
+	final static Chord[] CHORDS_WAY = { new Chord(72, new int[] { 0, 4, 7 }),
 			new Chord(72, new int[] { 0, 4, 7 }),
 			new Chord(67, new int[] { 0, 4, 7 }),
 			new Chord(67, new int[] { 0, 4, 7 }),
@@ -76,7 +84,7 @@ public class Rain
 			new Chord(69, new int[] { 0, 3, 7 }),
 			new Chord(67, new int[] { 0, 4, 7 }), };
 
-	final static Chord[] mablas = { new Chord(72, new int[] { 0, 3, 7 }),
+	final static Chord[] CHORDS_MABLAS = { new Chord(72, new int[] { 0, 3, 7 }),
 			new Chord(72, new int[] { 0, 3, 5, 7 }),
 			new Chord(72, new int[] { 0, 3, 7 }),
 			new Chord(70, new int[] { 0, 4, 7 }),
@@ -96,7 +104,8 @@ public class Rain
 			new Chord(70, new int[] { 0, 4, 7 }),
 			new Chord(70, new int[] { 0, 4, 7 }), };
 
-	final static Chord[] canon = { new Chord(74, new int[] { 0, 4, 7 }), // D Maj
+	final static Chord[] CHORDS_CANON = { new Chord(74, new int[] { 0, 4, 7 }), // D
+																																							// Maj
 			new Chord(69, new int[] { 0, 4, 7 }), // A Maj
 			new Chord(71, new int[] { 0, 3, 7 }), // B Min
 			new Chord(66, new int[] { 0, 3, 7 }), // F# min
@@ -124,8 +133,8 @@ public class Rain
 		rng = new Random();
 
 		System.out.println("Initialising window.");
-		Drawing ps = new Drawing(screenWidth, screenHeight);
-		ps.validate();
+		RainWindow rainWindow = new RainWindow(screenWidth, screenHeight);
+		rainWindow.validate();
 		System.out.println("\tgot us a screen");
 
 		try
@@ -228,7 +237,7 @@ public class Rain
 				}
 			}
 
-			ps.repaint();
+			rainWindow.repaint();
 			currentFPS = (int) Math
 					.ceil(TARGET_TIME_BETWEEN_UPDATES * 10 / (now - lastUpdateTime));
 			if (frameCounter == TARGET_FPS)
@@ -264,11 +273,18 @@ public class Rain
 			}
 
 		}
-		ps.dispose();
+		rainWindow.dispose();
 
 	}
 
-	private class Drawing
+	/**
+	 * 
+	 * {@link JFrame} extension to manage the "Rain" visual component.
+	 * 
+	 * @author Edward Hummerston
+	 *
+	 */
+	private class RainWindow
 			extends JFrame
 			implements KeyListener
 	{
@@ -280,7 +296,14 @@ public class Rain
 
 
 
-		public Drawing(int x, int y)
+		/**
+		 * Initialises the window that will display the "Rain" visuals in a
+		 * {@link RainPanel} object.
+		 * 
+		 * @param x Initial width of the window.
+		 * @param y Initial height of the window.
+		 */
+		public RainWindow(int x, int y)
 		{
 			super("welcome to art");
 			initUI(x, y);
@@ -292,7 +315,7 @@ public class Rain
 		{
 			setLocationRelativeTo(null);
 
-			add(new Surface());
+			add(new RainPanel());
 
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -311,7 +334,14 @@ public class Rain
 
 		}
 
-		private class Surface
+		/**
+		 * 
+		 * {@link JPanel} extension that sits with a {@link RainWindow} object.
+		 * 
+		 * @author Edward Hummerston
+		 *
+		 */
+		private class RainPanel
 				extends JPanel
 		{
 
@@ -322,7 +352,7 @@ public class Rain
 
 
 
-			public Surface()
+			public RainPanel()
 			{
 				setBackground(Color.WHITE);
 			}
@@ -461,6 +491,12 @@ public class Rain
 
 
 
+	/**
+	 * Plays a note in the specified channel, and creates a visual {@link Ripple}.
+	 * Randomly chooses pitch based on active {@link Chord}.
+	 *
+	 * @param id MIDI Channel to play note in.
+	 */
 	private void playNote(int id)
 	{
 		int octRange = 3;
@@ -495,31 +531,61 @@ public class Rain
 
 
 
+	/**
+	 * Changes current {@link Chord} and {@link Signature} to the "Frun" piece. 
+	 * 
+	 * @see Rain#TIME_SIGNATURE_FOUR_FOUR
+	 * @see Rain#CHORDS_FRUN
+	 */
 	public void changeToFrun()
 	{
-		phatBeats = new Signature(fourFour, 20, frun, System.nanoTime());
+		phatBeats = new Signature(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN,
+				System.nanoTime());
 	}
 
 
 
+	/**
+	 * Changes current {@link Chord} and {@link Signature} to resemble Master
+	 * Blaster by Stevie Wonder.
+	 * 
+	 * @see Rain#TIME_SIGNATURE_SWING
+	 * @see Rain#CHORDS_MABLAS
+	 */
 	public void changeToMablas()
 	{
-		phatBeats = new Signature(swing, 50, mablas, System.nanoTime());
+		phatBeats = new Signature(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS,
+				System.nanoTime());
 	}
 
 
 
+	/**
+	 * Changes current {@link Chord} and {@link Signature} to the "Way" structure.
+	 * 
+	 * @see Rain#TIME_SIGNATURE_SWING_2
+	 * @see Rain#CHORDS_WAY
+	 */
 	public void changeToWay()
 	{
 
-		phatBeats = new Signature(swing2, 80, way, System.nanoTime());
+		phatBeats = new Signature(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY,
+				System.nanoTime());
 	}
 
 
 
+	/**
+	 * Changes current {@link Chord} and {@link Signature} to Pachelbel's Canon in
+	 * D.
+	 * 
+	 * @see Rain#TIME_SIGNATURE_CANON
+	 * @see Rain#CHORDS_CANON
+	 */
 	public void changeToCanon()
 	{
-		phatBeats = new Signature(canonTime, 30, canon, System.nanoTime());
+		phatBeats = new Signature(TIME_SIGNATURE_CANON, 30, CHORDS_CANON,
+				System.nanoTime());
 	}
 
 }
