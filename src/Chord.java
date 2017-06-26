@@ -1,22 +1,31 @@
 
-public class Chord {
+public class Chord
+{
 
-	private int pedal;
-	private int[] intervals;
+	private int		pedal_;
+	private int[]	intervals_;
 
-	public Chord(int baseNote, int[] intervals) {
-		this.pedal = baseNote;
-		this.intervals = intervals;
+
+
+	public Chord(int baseNote, int[] intervals)
+	{
+		this.pedal_ = baseNote;
+		this.intervals_ = intervals;
 	}
 
-	public Chord(char pedal, char accid, int[] intervals) {
+
+
+	public Chord(char pedal, char accid, int[] intervals)
+	{
 		int base = (int) accid;
 
 		base -= 65;
-		if (base > 26) {
+		if (base > 26)
+		{
 			base -= 32;
 		}
-		switch (accid) {
+		switch (accid)
+		{
 		default:
 			break;
 		case '#':
@@ -29,22 +38,32 @@ public class Chord {
 		base = base % 12;
 
 		base += 69;
-		this.pedal = base;
+		this.pedal_ = base;
 
-		this.intervals = intervals;
+		this.intervals_ = intervals;
 	}
 
-	public int getChordLength() {
-		return intervals.length;
+
+
+	public int getChordLength()
+	{
+		return intervals_.length;
 	}
 
-	public int getInterval(int id) {
-		return pedal + intervals[id];
+
+
+	public int getInterval(int id)
+	{
+		return pedal_ + intervals_[id];
 	}
 
-	public static String intToNote(int pitch) {
+
+
+	public static String intToNote(int pitch)
+	{
 		String strang = new String();
-		switch (pitch % 12) {
+		switch (pitch % 12)
+		{
 		case 0:
 			strang += "C";
 			break;
@@ -86,8 +105,11 @@ public class Chord {
 		return strang;
 	}
 
-	public void offsetOctave(int offset) {
-		pedal += 12 * offset;
+
+
+	public void offsetOctave(int offset)
+	{
+		pedal_ += 12 * offset;
 	}
 
 }
