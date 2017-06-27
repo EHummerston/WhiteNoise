@@ -4,8 +4,6 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.util.Random;
 
-import music.Rain;
-
 public class Ripple
 {
 	private int						x_, y_;

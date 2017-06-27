@@ -25,7 +25,7 @@ import visuals.Ripple;
  * @author Edward Hummerston
  * @version 1.0
  */
-public class Rain
+public class WhiteNoise
 {
 
 	Random rng;
@@ -126,13 +126,13 @@ public class Rain
 	public static void main(String[] args)
 	{
 
-		new Rain();
+		new WhiteNoise();
 
 	}
 
 
 
-	public Rain()
+	public WhiteNoise()
 	{
 
 		rng = new Random();
