@@ -6,7 +6,6 @@ package music;
  * {@code ChordProgression} (TODO: update ChordProgression reference) class.
  * 
  * @author Edward
- *
  */
 public class Chord
 {

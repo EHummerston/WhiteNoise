@@ -4,7 +4,6 @@ package music;
  * List of common chord names, independent of the root note.
  * 
  * @author Edward
- *
  */
 public enum ChordName
 {
