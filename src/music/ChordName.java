@@ -3,7 +3,7 @@ package music;
 /**
  * List of common chord names, independent of the root note.
  * 
- * @author Edward
+ * @author Edward Hummerston
  */
 public enum ChordName
 {

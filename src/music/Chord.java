@@ -5,7 +5,7 @@ package music;
  * collection of musical pitches. Instances of this class are used in the
  * {@code ChordProgression} (TODO: update ChordProgression reference) class.
  * 
- * @author Edward
+ * @author Edward Hummerston
  */
 public class Chord
 {

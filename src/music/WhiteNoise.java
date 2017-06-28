@@ -15,9 +15,6 @@ import javax.sound.midi.Synthesizer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import visuals.Debris;
-import visuals.Ripple;
-
 /**
  * The White Noise program is an experimental system for generating random
  * music.
@@ -35,10 +32,10 @@ public class WhiteNoise
 
 	public int screenWidth = 1280, screenHeight = 720;
 
-	Ripple[]	rips;
-	Signature	phatBeats;
+	// Ripple[] rips;
+	Signature phatBeats;
 
-	Debris[] rocksNShit;
+	// Debris[] rocksNShit;
 
 	private Synthesizer		synth;
 	private MidiChannel[]	mc;
@@ -137,10 +134,10 @@ public class WhiteNoise
 
 		rng = new Random();
 
-		System.out.println("Initialising window.");
-		RainWindow rainWindow = new RainWindow(screenWidth, screenHeight);
-		rainWindow.validate();
-		System.out.println("\tgot us a screen");
+		//System.out.println("Initialising window.");
+		//RainWindow rainWindow = new RainWindow(screenWidth, screenHeight);
+		//rainWindow.validate();
+		//System.out.println("\tgot us a screen");
 
 		try
 		{
@@ -187,62 +184,25 @@ public class WhiteNoise
 
 		boolean loop = true;
 
-		this.changeToFrun();
-		rips = new Ripple[mc.length];
-		rocksNShit = new Debris[16];
+		this.changeToMablas();
+		// rips = new Ripple[mc.length];
+		// rocksNShit = new Debris[16];
 
+		System.out.println("Begin Main Loop");
 		while (loop)
 		{
+			
 			phatBeats.setTime(now);
-			for (int i = 0; i < rips.length; i++)
+
+			if (phatBeats.getBeat() != 0)
 			{
-				if (rips[i] != null)
+				if (rng.nextDouble() < 0.9 / (phatBeats.getBeat()))
 				{
-					rips[i].update();
-					if (rips[i].isDead())
-					{
-						rips[i] = null;
-					}
-				}
-				else
-				{
-					if (phatBeats.getBeat() != 0 && i != 9)
-					{
-						if (rng.nextDouble() < 0.9 / (phatBeats.getBeat()))
-						{
-							playNote(i);
-						}
-						break;
-					}
-				}
-			}
-			float volume = 0;
-			for (int i = 0; i < rocksNShit.length; i++)
-			{
-				if (rocksNShit[i] != null)
-				{
-					if (rocksNShit[i].isDead(screenWidth, screenHeight))
-					{
-						rocksNShit[i] = null;
-					}
-					else
-					{
-						rocksNShit[i].update();
-						volume += rocksNShit[i].getVolume();
-					}
-				}
-				else
-				{
-					if (volume < (screenWidth * screenHeight))
-					{
-						rocksNShit[i] = new Debris((screenWidth), (screenHeight),
-								screenWidth * screenHeight / 2);
-						volume += rocksNShit[i].getVolume();
-					}
+					playNote(0);
 				}
 			}
 
-			rainWindow.repaint();
+			//rainWindow.repaint();
 			currentFPS = (int) Math
 					.ceil(TARGET_TIME_BETWEEN_UPDATES * 10 / (now - lastUpdateTime));
 			if (frameCounter == TARGET_FPS)
@@ -273,12 +233,11 @@ public class WhiteNoise
 				{}
 
 				loop = running;
-
 				now = System.nanoTime();
 			}
-
 		}
-		rainWindow.dispose();
+		System.out.println("Closing.");
+		//rainWindow.dispose();
 
 	}
 
@@ -374,22 +333,7 @@ public class WhiteNoise
 				{
 					Graphics2D g2d = (Graphics2D) g;
 
-					for (int i = 0; i < rocksNShit.length; i++)
-					{
-						if (rocksNShit[i] != null)
-						{
-							rocksNShit[i].draw(g2d);
-						}
-					}
-
 					g2d.setColor(Color.BLUE);
-					for (int i = 0; i < rips.length; i++)
-					{
-						if (rips[i] != null)
-						{
-							rips[i].draw(g2d);
-						}
-					}
 
 					if (drawFPS)
 					{
@@ -513,9 +457,6 @@ public class WhiteNoise
 		int highNote =
 				chord.getInterval(chord.getChordLength() - 1) + 12 * octRange;
 
-		double pitchRatio =
-				Math.pow(1 - ((double) (note - lowNote)) / (highNote - lowNote), 2);
-
 		mc[id].noteOn(note, volume);
 
 		// System.out.print(Chord.intToNote(note)+ " " + phatBeats.getChordID()
@@ -528,8 +469,6 @@ public class WhiteNoise
 			System.out
 					.println("HONK channel" + id + " Instrument: " + mc[id].getProgram());
 		}
-
-		rips[id] = new Ripple(screenWidth, screenHeight, pitchRatio);
 
 	}
 
