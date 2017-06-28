@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import music.Chord;
-import music.Signature;
+import music.Piece;
 
 /**
  * The White Noise program is an experimental system for generating random
@@ -36,7 +36,7 @@ public class Rain
 	public int screenWidth = 1280, screenHeight = 720;
 
 	Ripple[]	rips;
-	Signature	phatBeats;
+	Piece	phatBeats;
 
 	Debris[] rocksNShit;
 
@@ -536,21 +536,21 @@ public class Rain
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Signature} to the "Frun" piece.
+	 * Changes current {@link Chord} and {@link Piece} to the "Frun" piece.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_FOUR_FOUR
 	 * @see Rain#CHORDS_FRUN
 	 */
 	public void changeToFrun()
 	{
-		phatBeats = new Signature(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN,
+		phatBeats = new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN,
 				System.nanoTime());
 	}
 
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Signature} to resemble Master
+	 * Changes current {@link Chord} and {@link Piece} to resemble Master
 	 * Blaster by Stevie Wonder.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_SWING
@@ -558,14 +558,14 @@ public class Rain
 	 */
 	public void changeToMablas()
 	{
-		phatBeats = new Signature(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS,
+		phatBeats = new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS,
 				System.nanoTime());
 	}
 
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Signature} to the "Way" structure.
+	 * Changes current {@link Chord} and {@link Piece} to the "Way" structure.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_SWING_2
 	 * @see Rain#CHORDS_WAY
@@ -573,14 +573,14 @@ public class Rain
 	public void changeToWay()
 	{
 
-		phatBeats = new Signature(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY,
+		phatBeats = new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY,
 				System.nanoTime());
 	}
 
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Signature} to Pachelbel's Canon in
+	 * Changes current {@link Chord} and {@link Piece} to Pachelbel's Canon in
 	 * D.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_CANON
@@ -588,7 +588,7 @@ public class Rain
 	 */
 	public void changeToCanon()
 	{
-		phatBeats = new Signature(TIME_SIGNATURE_CANON, 30, CHORDS_CANON,
+		phatBeats = new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON,
 				System.nanoTime());
 	}
 

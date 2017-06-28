@@ -2,11 +2,11 @@ package music;
 
 /**
  * {@code Signature} is the managing class for chord progressions, tempos and
- * time signatures.
+ * time signatures. TODO
  * 
- * @author Edward
+ * @author Edward Hummerston
  */
-public class Signature
+public class Piece
 {
 
 	private int[]		beats_;
@@ -22,14 +22,14 @@ public class Signature
 	/**
 	 * Initialises an instance of the {@code Signature} class.
 	 * 
-	 * @param beats Time signature to be used.
+	 * @param beats Time signature to be used. TODO
 	 * @param tempo Indicates speed. Number of time signature bars played per
 	 *          minute.
 	 * @param chords All chords used in the piece.
 	 * @param currentTime Time which the object will use as its starting point.
 	 *          (Use {@link System#nanoTime()})
 	 */
-	public Signature(int[] beats, int tempo, Chord[] chords, double currentTime)
+	public Piece(int[] beats, int tempo, Chord[] chords, double currentTime)
 	{
 		this.lastPlayedTime_ = currentTime;
 		this.beats_ = beats;
@@ -44,7 +44,8 @@ public class Signature
 
 	/**
 	 * Checks the given time against the time a note was previously (supposed to
-	 * be) played. Determines if the next note is due.
+	 * be) played. Determines if the next note is due based on the time signature.
+	 * TODO
 	 * 
 	 * @param currentTime The new time to be compared against the previous note.
 	 *          (Use {@link System#nanoTime()})
@@ -80,8 +81,8 @@ public class Signature
 	 * any).
 	 * 
 	 * @return The time signature value for the current beat OR 0 if no note is
-	 *         due.
-	 * @see Signature#setTime(double)
+	 *         due. TODO
+	 * @see Piece#setTime(double)
 	 */
 	public int getBeat()
 	{
@@ -98,8 +99,8 @@ public class Signature
 
 
 	/**
-	 * Changes the tempo, the number of time signature bars that are played per
-	 * minute.
+	 * Changes the tempo, the number of time signature TODO bars that are played
+	 * per minute.
 	 * 
 	 * @param tempo New tempo to be used.
 	 */
