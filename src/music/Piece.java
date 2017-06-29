@@ -1,8 +1,8 @@
 package music;
 
 /**
- * {@code Signature} is the managing class for chord progressions, tempos and
- * time signatures. TODO
+ * {@code Piece} is the managing class for chord progressions, tempos and
+ * {@link TimeSignature}s.
  * 
  * @author Edward Hummerston
  */
@@ -20,7 +20,7 @@ public class Piece
 
 
 	/**
-	 * Initialises an instance of the {@code Signature} class.
+	 * Initialises an instance of the {@code Piece} class.
 	 * 
 	 * @param beats Time signature to be used. TODO
 	 * @param tempo Indicates speed. Number of time signature bars played per

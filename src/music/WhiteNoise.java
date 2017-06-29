@@ -1,19 +1,14 @@
 package music;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Random;
 
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+
+import visuals.Rain;
+import visuals.Ripple;
 
 /**
  * The White Noise program is an experimental system for generating random
@@ -32,10 +27,7 @@ public class WhiteNoise
 
 	public int screenWidth = 1280, screenHeight = 720;
 
-	// Ripple[] rips;
-	Piece phatBeats;
-
-	// Debris[] rocksNShit;
+	Piece piece;
 
 	private Synthesizer		synth;
 	private MidiChannel[]	mc;
@@ -134,11 +126,6 @@ public class WhiteNoise
 
 		rng = new Random();
 
-		//System.out.println("Initialising window.");
-		//RainWindow rainWindow = new RainWindow(screenWidth, screenHeight);
-		//rainWindow.validate();
-		//System.out.println("\tgot us a screen");
-
 		try
 		{
 			System.out.println("Retrieving MIDI synthesizer.");
@@ -185,30 +172,26 @@ public class WhiteNoise
 		boolean loop = true;
 
 		this.changeToMablas();
-		// rips = new Ripple[mc.length];
-		// rocksNShit = new Debris[16];
 
 		System.out.println("Begin Main Loop");
 		while (loop)
 		{
-			
-			phatBeats.setTime(now);
 
-			if (phatBeats.getBeat() != 0)
+			piece.setTime(now);
+
+			if (piece.getBeat() != 0)
 			{
-				if (rng.nextDouble() < 0.9 / (phatBeats.getBeat()))
+				if (rng.nextDouble() < 0.9 / (piece.getBeat()))
 				{
 					playNote(0);
 				}
 			}
 
-			//rainWindow.repaint();
 			currentFPS = (int) Math
 					.ceil(TARGET_TIME_BETWEEN_UPDATES * 10 / (now - lastUpdateTime));
 			if (frameCounter == TARGET_FPS)
 			{
 
-				// System.out.println("FPS: " + currentFPS);
 				frameCounter = 0;
 			}
 			frameCounter++;
@@ -223,8 +206,6 @@ public class WhiteNoise
 				// slightly less accurate, but is worth it.
 				// You can remove this line and it will still work (better),
 				// your CPU just climbs on certain OSes.
-				// FYI on some OS's this can cause pretty bad stuttering. Scroll
-				// down and have a look at different peoples' solutions to this.
 				try
 				{
 					Thread.sleep(1);
@@ -237,204 +218,6 @@ public class WhiteNoise
 			}
 		}
 		System.out.println("Closing.");
-		//rainWindow.dispose();
-
-	}
-
-	/**
-	 * 
-	 * {@link JFrame} extension to manage the "Rain" visual component.
-	 * 
-	 * @author Edward Hummerston
-	 *
-	 */
-	private class RainWindow
-			extends JFrame
-			implements KeyListener
-	{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -3358805991593520296L;
-
-
-
-		/**
-		 * Initialises the window that will display the "Rain" visuals in a
-		 * {@link RainPanel} object.
-		 * 
-		 * @param x Initial width of the window.
-		 * @param y Initial height of the window.
-		 */
-		public RainWindow(int x, int y)
-		{
-			super("welcome to art");
-			initUI(x, y);
-		}
-
-
-
-		private void initUI(int x, int y)
-		{
-			setLocationRelativeTo(null);
-
-			add(new RainPanel());
-
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-			this.setLocation(10, 10);
-
-			x += 10;
-			y += 28;
-			setSize(x, y);
-
-			this.setResizable(true);
-			this.setFocusable(true);
-
-			this.setVisible(true);
-
-			this.addKeyListener(this);
-
-		}
-
-		/**
-		 * 
-		 * {@link JPanel} extension that sits with a {@link RainWindow} object.
-		 * 
-		 * @author Edward Hummerston
-		 *
-		 */
-		private class RainPanel
-				extends JPanel
-		{
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 670446242401454707L;
-
-
-
-			public RainPanel()
-			{
-				setBackground(Color.WHITE);
-			}
-
-
-
-			private void doDrawing(Graphics g)
-			{
-
-				screenWidth = this.getWidth();
-				screenHeight = this.getHeight();
-
-				if (running)
-				{
-					Graphics2D g2d = (Graphics2D) g;
-
-					g2d.setColor(Color.BLUE);
-
-					if (drawFPS)
-					{
-						String txt = new String();
-						txt += currentFPS * 10;
-						txt += "%";
-						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-						g2d.setColor(Color.RED);
-						g2d.drawString(txt, 0, screenHeight);
-					}
-
-					if (helpAlpha > 0)
-					{
-						g2d.setComposite(
-								AlphaComposite.getInstance(AlphaComposite.SRC_OVER, helpAlpha));
-						g2d.setColor(Color.BLACK);
-
-						String txt = new String();
-						txt += "UP and DOWN change volume";
-						g2d.drawString(txt, 0, screenHeight / 2);
-
-						txt = new String();
-						txt += "1 - 4 change styles";
-						g2d.drawString(txt, 0,
-								screenHeight / 2 + g.getFontMetrics().getHeight());
-
-						helpAlpha -= (float) 1 / TARGET_FPS / 4;
-					}
-				}
-			}
-
-
-
-			@Override
-			public void paintComponent(Graphics g)
-			{
-
-				super.paintComponent(g);
-
-				doDrawing(g);
-			}
-
-		}
-
-
-
-		@Override
-		public void keyPressed(KeyEvent e)
-		{
-
-			switch (e.getKeyCode())
-			{
-			case KeyEvent.VK_ESCAPE:
-				running = false;
-				break;
-			case KeyEvent.VK_SPACE:
-				paused = !paused;
-				break;
-			case KeyEvent.VK_1:
-				changeToFrun();
-				break;
-			case KeyEvent.VK_2:
-				changeToMablas();
-				break;
-			case KeyEvent.VK_3:
-				changeToWay();
-				break;
-			case KeyEvent.VK_4:
-				changeToCanon();
-				break;
-			case KeyEvent.VK_R:
-				drawFPS = !drawFPS;
-				helpAlpha = 1;
-				break;
-			case KeyEvent.VK_DOWN:
-				if (volume > 0)
-				{
-					volume -= 5;
-				}
-				break;
-			case KeyEvent.VK_UP:
-				if (volume < 50)
-				{
-					volume += 5;
-				}
-				break;
-			}
-
-		}
-
-
-
-		@Override
-		public void keyReleased(KeyEvent arg0)
-		{}
-
-
-
-		@Override
-		public void keyTyped(KeyEvent arg0)
-		{}
 
 	}
 
@@ -449,20 +232,11 @@ public class WhiteNoise
 	private void playNote(int id)
 	{
 		int octRange = 3;
-		Chord chord = phatBeats.getChord();
+		Chord chord = piece.getChord();
 		int note = chord.getInterval(rng.nextInt(chord.getChordLength()));
 		note += 12 * rng.nextInt(octRange);
-		// note+=12*(octRange);
-		int lowNote = chord.getInterval(0);
-		int highNote =
-				chord.getInterval(chord.getChordLength() - 1) + 12 * octRange;
 
 		mc[id].noteOn(note, volume);
-
-		// System.out.print(Chord.intToNote(note)+ " " + phatBeats.getChordID()
-		// + "\t") ;
-
-		// System.out.println(id+"\t"+synth.getAvailableInstruments()[mc[id].getProgram()].toString());
 
 		if (mc[id].getProgram() != instrID)
 		{
@@ -482,23 +256,23 @@ public class WhiteNoise
 	 */
 	public void changeToFrun()
 	{
-		phatBeats = new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN,
-				System.nanoTime());
+		piece =
+				new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN, System.nanoTime());
 	}
 
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Piece} to resemble Master
-	 * Blaster by Stevie Wonder.
+	 * Changes current {@link Chord} and {@link Piece} to resemble Master Blaster
+	 * by Stevie Wonder.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_SWING
 	 * @see Rain#CHORDS_MABLAS
 	 */
 	public void changeToMablas()
 	{
-		phatBeats = new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS,
-				System.nanoTime());
+		piece =
+				new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS, System.nanoTime());
 	}
 
 
@@ -512,23 +286,22 @@ public class WhiteNoise
 	public void changeToWay()
 	{
 
-		phatBeats = new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY,
-				System.nanoTime());
+		piece =
+				new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY, System.nanoTime());
 	}
 
 
 
 	/**
-	 * Changes current {@link Chord} and {@link Piece} to Pachelbel's Canon in
-	 * D.
+	 * Changes current {@link Chord} and {@link Piece} to Pachelbel's Canon in D.
 	 * 
 	 * @see Rain#TIME_SIGNATURE_CANON
 	 * @see Rain#CHORDS_CANON
 	 */
 	public void changeToCanon()
 	{
-		phatBeats = new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON,
-				System.nanoTime());
+		piece =
+				new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON, System.nanoTime());
 	}
 
 }
