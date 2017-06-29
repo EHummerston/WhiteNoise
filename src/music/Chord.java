@@ -146,4 +146,18 @@ public class Chord
 		return outString;
 	}
 
+
+
+	public boolean equals(Chord other)
+	{
+		for (int i = 0; (i < this.getChordLength()) && (i < other.getChordLength());
+				i++)
+		{
+			if (!(this.getInterval(i) == other.getInterval(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 }
