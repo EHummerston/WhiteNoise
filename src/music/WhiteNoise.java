@@ -256,8 +256,8 @@ public class WhiteNoise
    */
   public void changeToFrun()
   {
-    piece =
-        new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN, System.nanoTime());
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_FOUR_FOUR, 4, 80),
+        CHORDS_FRUN, System.nanoTime());
   }
 
 
@@ -271,8 +271,9 @@ public class WhiteNoise
    */
   public void changeToMablas()
   {
-    piece =
-        new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS, System.nanoTime());
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING, 4, 131),
+        CHORDS_MABLAS, System.nanoTime());
+
   }
 
 
@@ -286,8 +287,8 @@ public class WhiteNoise
   public void changeToWay()
   {
 
-    piece =
-        new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY, System.nanoTime());
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING_2, 2, 160),
+        CHORDS_WAY, System.nanoTime());
   }
 
 
@@ -300,8 +301,8 @@ public class WhiteNoise
    */
   public void changeToCanon()
   {
-    piece =
-        new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON, System.nanoTime());
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_CANON, 1, 30),
+        CHORDS_CANON, System.nanoTime());
   }
 
 }

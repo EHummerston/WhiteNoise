@@ -35,6 +35,19 @@ public class TimeSignature
 
 
 
+  public TimeSignature(int[] noteValues, int beatCount, int tempo)
+  {
+    this.noteValues_ = new ArrayList<Integer>();
+    for (int i = 0; i < noteValues.length; i++)
+    {
+      noteValues_.add(noteValues[i]);
+    }
+    this.beatCount_ = beatCount;
+    this.tempo_ = tempo;
+  }
+
+
+
   public int getNoteValue(int index)
   {
     return noteValues_.get(index);
@@ -83,17 +96,19 @@ public class TimeSignature
 
 
   /**
-   * Determines the duration of each segment of the {@code noteValues} list.
-   * Does <strong>not</strong> represent the duration of each <i>beat</i>.
+   * Determines the duration of each segment of the {@code noteValues} list in
+   * nanoseconds. Does <strong>not</strong> represent the duration of each
+   * <i>beat</i>.
    * 
    * @return Duration of each segment in nanoseconds.
    */
-  public double getNoteDuration()
+  public double getNanoDuration()
   {
-    double beatFractions = (double) beatCount_ / (double) noteValues_.size();
-    double fractionsPerSecond = (double) tempo_ / 60.0 * beatFractions;
+    double bps = (double) tempo_ / 60.0;
+    double segmentsPerBeat = (double) noteValues_.size() / (double) beatCount_;
+    double fractionsPerSecond = bps * segmentsPerBeat;
 
-    double tempoClock = 1000000000 / fractionsPerSecond;
+    double tempoClock = (Math.pow(10, 9)) / fractionsPerSecond;
 
     return tempoClock;
   }

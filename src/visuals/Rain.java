@@ -543,8 +543,8 @@ public class Rain
    */
   public void changeToFrun()
   {
-    phatBeats =
-        new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN, System.nanoTime());
+//    phatBeats =
+//        new Piece(TIME_SIGNATURE_FOUR_FOUR, 20, CHORDS_FRUN, System.nanoTime());
   }
 
 
@@ -558,8 +558,8 @@ public class Rain
    */
   public void changeToMablas()
   {
-    phatBeats =
-        new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS, System.nanoTime());
+//    phatBeats =
+//        new Piece(TIME_SIGNATURE_SWING, 50, CHORDS_MABLAS, System.nanoTime());
   }
 
 
@@ -573,8 +573,8 @@ public class Rain
   public void changeToWay()
   {
 
-    phatBeats =
-        new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY, System.nanoTime());
+//    phatBeats =
+//        new Piece(TIME_SIGNATURE_SWING_2, 80, CHORDS_WAY, System.nanoTime());
   }
 
 
@@ -587,8 +587,8 @@ public class Rain
    */
   public void changeToCanon()
   {
-    phatBeats =
-        new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON, System.nanoTime());
+//    phatBeats =
+//        new Piece(TIME_SIGNATURE_CANON, 30, CHORDS_CANON, System.nanoTime());
   }
 
 }

@@ -9,13 +9,12 @@ package music;
 public class Piece
 {
 
-  private int[]   beats_;
-  private int     beatCurrent_;
-  private double  lastPlayedTime_;
-  private int     tempo_;
-  private boolean onBeat_;
-  private Chord[] chords_;
-  private int     chordCurrent_;
+  private TimeSignature timeSignature_;
+  private int           beatCurrent_;
+  private double        lastPlayedTime_;
+  private boolean       onBeat_;
+  private Chord[]       chords_;
+  private int           chordCurrent_;
 
 
 
@@ -29,11 +28,10 @@ public class Piece
    * @param currentTime Time which the object will use as its starting point.
    *          (Use {@link System#nanoTime()})
    */
-  public Piece(int[] beats, int tempo, Chord[] chords, double currentTime)
+  public Piece(TimeSignature timeSignature, Chord[] chords, double currentTime)
   {
     this.lastPlayedTime_ = currentTime;
-    this.beats_ = beats;
-    this.tempo_ = tempo;
+    this.timeSignature_ = timeSignature;
     this.chords_ = chords;
     this.beatCurrent_ = 0;
     this.chordCurrent_ = 0;
@@ -52,12 +50,13 @@ public class Piece
    */
   public void setTime(double currentTime)
   {
-    double tempoClock = 1000000000 / ((double) tempo_ / (60 / beats_.length));
-    if (currentTime >= lastPlayedTime_ + tempoClock)
+    double tempoClock = timeSignature_.getNanoDuration();
+    double noteDue = (lastPlayedTime_ + tempoClock) - currentTime;
+    if (noteDue <= 0)
     {
       lastPlayedTime_ += tempoClock;
       beatCurrent_++;
-      if (beatCurrent_ >= beats_.length)
+      if (beatCurrent_ >= timeSignature_.getNoteValuesLength())
       {
         beatCurrent_ = 0;
         chordCurrent_++;
@@ -88,7 +87,7 @@ public class Piece
   {
     if (onBeat_)
     {
-      return beats_[beatCurrent_];
+      return timeSignature_.getNoteValue(beatCurrent_);
     }
     else
     {
@@ -106,7 +105,7 @@ public class Piece
    */
   public void setTempo(int tempo)
   {
-    this.tempo_ = tempo;
+    timeSignature_.setTempo(tempo);
   }
 
 
