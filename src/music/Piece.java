@@ -21,16 +21,14 @@ public class Piece
   /**
    * Initialises an instance of the {@code Piece} class.
    * 
-   * @param beats Time signature to be used. TODO
-   * @param tempo Indicates speed. Number of time signature bars played per
-   *          minute.
+   * @param beats {@link TimeSignature} to be used.
    * @param chords All chords used in the piece.
-   * @param currentTime Time which the object will use as its starting point.
-   *          (Use {@link System#nanoTime()})
+   * @param startTime Time which the object will use as its starting point. (Use
+   *          {@link System#nanoTime()})
    */
-  public Piece(TimeSignature timeSignature, Chord[] chords, double currentTime)
+  public Piece(TimeSignature timeSignature, Chord[] chords, double startTime)
   {
-    this.lastPlayedTime_ = currentTime;
+    this.lastPlayedTime_ = startTime;
     this.timeSignature_ = timeSignature;
     this.chords_ = chords;
     this.beatCurrent_ = 0;
@@ -42,8 +40,8 @@ public class Piece
 
   /**
    * Checks the given time against the time a note was previously (supposed to
-   * be) played. Determines if the next note is due based on the time signature.
-   * TODO
+   * be) played. Determines if the next note is due based on the
+   * {@link TimeSignature}. Affects the result of {@link Piece#getBeat()}.
    * 
    * @param currentTime The new time to be compared against the previous note.
    *          (Use {@link System#nanoTime()})
@@ -79,8 +77,8 @@ public class Piece
    * Retrieves the value set by the time signature for the current beat (if
    * any).
    * 
-   * @return The time signature value for the current beat OR 0 if no note is
-   *         due. TODO
+   * @return The {@link TimeSignature} value for the current beat OR 0 if no
+   *         note is due.
    * @see Piece#setTime(double)
    */
   public int getBeat()
@@ -98,7 +96,7 @@ public class Piece
 
 
   /**
-   * Changes the tempo, the number of time signature TODO bars that are played
+   * Changes the tempo, the number of {@link TimeSignature} bars that are played
    * per minute.
    * 
    * @param tempo New tempo to be used.

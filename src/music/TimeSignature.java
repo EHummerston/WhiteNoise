@@ -21,7 +21,8 @@ public class TimeSignature
    * {@code tempo} does not support irregular time signatures where all beats
    * are not the same length.
    * 
-   * @param noteValues
+   * @param noteValues List of integers indicating emphasis of notes on that
+   *          segment of time.
    * @param beatCount Indicates how many "beats" are in each bar. Represents the
    *          upper numeral in time (or meter) signature notation.
    * @param tempo How many beats are played in a minute.
@@ -35,6 +36,18 @@ public class TimeSignature
 
 
 
+  /**
+   * Constructor which converts a primitive array ({@code int[]}) into the
+   * stored {@link ArrayList}. Initialises a {@code TimeSignature} object with
+   * the given values. {@code tempo} does not support irregular time signatures
+   * where all beats are not the same length.
+   * 
+   * @param noteValues List of integers indicating emphasis of notes on that
+   *          segment of time.
+   * @param beatCount Indicates how many "beats" are in each bar. Represents the
+   *          upper numeral in time (or meter) signature notation.
+   * @param tempo How many beats are played in a minute.
+   */
   public TimeSignature(int[] noteValues, int beatCount, int tempo)
   {
     this.noteValues_ = new ArrayList<Integer>();
