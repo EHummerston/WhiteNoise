@@ -1,5 +1,9 @@
 package music;
 
+import java.util.Random;
+
+import javax.sound.midi.MidiChannel;
+
 /**
  * {@code Piece} is the managing class for chord progressions, tempos and
  * {@link TimeSignature}s.
@@ -91,6 +95,36 @@ public class Piece
     {
       return 0;
     }
+  }
+
+
+
+  public boolean playNote(MidiChannel[] midiChannels, int volume, Random random)
+  {
+    Chord currentChord = chords_[chordCurrent_];
+    if (beatCurrent_ == 0)
+    {
+      midiChannels[1].allNotesOff();
+      for (int i = 0; i < currentChord.getChordLength(); i++)
+      {
+        midiChannels[1].noteOn(currentChord.getInterval(i), volume * 3 / 4);
+      }
+    }
+
+    if (random.nextDouble() <= (double) 0.9 /
+        timeSignature_.getNoteValue(beatCurrent_))
+    {
+      midiChannels[0].allNotesOff();
+      int octRange = 2;
+
+      int note = currentChord
+          .getInterval(random.nextInt(currentChord.getChordLength()));
+      note += 12 * random.nextInt(octRange);
+
+      midiChannels[0].noteOn(note,
+          10 + volume - timeSignature_.getNoteValue(beatCurrent_));
+    }
+    return true;
   }
 
 

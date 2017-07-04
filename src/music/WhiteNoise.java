@@ -2,6 +2,7 @@ package music;
 
 import java.util.Random;
 
+import javax.sound.midi.Instrument;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -29,8 +30,8 @@ public class WhiteNoise
 
   Piece piece;
 
-  private Synthesizer   synth;
-  private MidiChannel[] mc;
+  private Synthesizer   synthesizer_;
+  private MidiChannel[] midiChannels_;
 
   int     currentFPS;
   boolean drawFPS = false;
@@ -44,13 +45,15 @@ public class WhiteNoise
 
   float helpAlpha = 1;
 
-  int instrID = 11;
+  // int instrID = 11;
+  int instrBank = 1024;
+  int instrID = 80;
 
   final static int[] TIME_SIGNATURE_FOUR_FOUR =
       { 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4 };
-  final static int[] TIME_SIGNATURE_SWING     =
-      { 1, 0, 2, 1, 0, 3, 1, 0, 2, 1, 0, 3 };
-  final static int[] TIME_SIGNATURE_SWING_2   = { 1, 0, 2, 1, 0, 3 };
+  final static int[] TIME_SIGNATURE_FUNK     =
+      { 1, 0, 2, 1, 0, 3};
+  final static int[] TIME_SIGNATURE_SWING   = { 1, 0, 2, 1, 0, 3 };
   final static int[] TIME_SIGNATURE_CANON     = { 1, 8, 4, 8, 2, 8, 4, 8 };
 
   final static Chord[] CHORDS_FRUN = { new Chord(69, new int[] { 0, 4, 7 }),
@@ -129,33 +132,29 @@ public class WhiteNoise
     try
     {
       System.out.println("Retrieving MIDI synthesizer.");
-      synth = MidiSystem.getSynthesizer();
+      synthesizer_ = MidiSystem.getSynthesizer();
       System.out.println("Initialising it.");
-      synth.open();
+      synthesizer_.open();
       System.out.println("Retrieving channels.");
-      mc = synth.getChannels();
-      // Instrument[] instr = synth.getAvailableInstruments();
-      //
-      // StringBuilder sb = new StringBuilder();
-      // String eol = System.getProperty("line.separator");
-      // sb.append(
-      // "The orchestra has " +
-      // instr.length +
-      // " instruments." +
-      // eol);
-      // for (Instrument instrument : instr)
-      // {
-      // sb.append(instrument.toString());
-      // sb.append(eol);
-      // }
-      // System.out.println(sb.toString());
+      midiChannels_ = synthesizer_.getChannels();
+      Instrument[] instr = synthesizer_.getAvailableInstruments();
 
-      // synth.loadInstrument(instr[0]);
-      System.out.println("Setting instruments.");
-      for (int i = 0; i < mc.length; i++)
+      StringBuilder sb = new StringBuilder();
+      String eol = System.getProperty("line.separator");
+      sb.append("The orchestra has " + instr.length + " instruments." + eol);
+      for (Instrument instrument : instr)
       {
-        mc[i].programChange(0, instrID);
-        mc[i].setMono(true);
+        sb.append(instrument.toString());
+        sb.append(eol);
+      }
+      System.out.println(sb.toString());
+
+      synthesizer_.loadInstrument(instr[0]);
+      System.out.println("Setting instruments.");
+      for (int i = 0; i < midiChannels_.length; i++)
+      {
+        midiChannels_[i].programChange(instrBank, instrID);
+        midiChannels_[i].setMono(false);
       }
       System.out.println("\tlets make some noise");
     }
@@ -171,7 +170,7 @@ public class WhiteNoise
 
     boolean loop = true;
 
-    this.changeToMablas();
+    this.changeToCanon();
 
     System.out.println("Begin Main Loop");
     while (loop)
@@ -181,10 +180,11 @@ public class WhiteNoise
 
       if (piece.getBeat() != 0)
       {
-        if (rng.nextDouble() < 0.9 / (piece.getBeat()))
-        {
-          playNote(0);
-        }
+        //if (rng.nextDouble() < 0.9 / (piece.getBeat()))
+        //{
+          //playNote(0);
+        //}
+        piece.playNote(midiChannels_, volume, rng);
       }
 
       currentFPS = (int) Math
@@ -231,17 +231,19 @@ public class WhiteNoise
    */
   private void playNote(int id)
   {
+    midiChannels_[id].allNotesOff();
     int octRange = 3;
     Chord chord = piece.getChord();
     int note = chord.getInterval(rng.nextInt(chord.getChordLength()));
     note += 12 * rng.nextInt(octRange);
 
-    mc[id].noteOn(note, volume);
+    midiChannels_[id].noteOn(note, volume);
+    midiChannels_[id].noteOn(note + 7, volume/2);
 
-    if (mc[id].getProgram() != instrID)
+    if (midiChannels_[id].getProgram() != instrID)
     {
-      System.out
-          .println("HONK channel" + id + " Instrument: " + mc[id].getProgram());
+      System.out.println("HONK channel" + id + " Instrument: " +
+          midiChannels_[id].getProgram());
     }
 
   }
@@ -266,12 +268,12 @@ public class WhiteNoise
    * Changes current {@link Chord} and {@link Piece} to resemble Master Blaster
    * by Stevie Wonder.
    * 
-   * @see Rain#TIME_SIGNATURE_SWING
+   * @see Rain#TIME_SIGNATURE_FUNK
    * @see Rain#CHORDS_MABLAS
    */
   public void changeToMablas()
   {
-    piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING, 4, 131),
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_FUNK, 2, 131),
         CHORDS_MABLAS, System.nanoTime());
 
   }
@@ -281,13 +283,13 @@ public class WhiteNoise
   /**
    * Changes current {@link Chord} and {@link Piece} to the "Way" structure.
    * 
-   * @see Rain#TIME_SIGNATURE_SWING_2
+   * @see Rain#TIME_SIGNATURE_SWING
    * @see Rain#CHORDS_WAY
    */
   public void changeToWay()
   {
 
-    piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING_2, 2, 160),
+    piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING, 2, 160),
         CHORDS_WAY, System.nanoTime());
   }
 
