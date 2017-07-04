@@ -20,6 +20,8 @@ public class Piece
   private Chord[]       chords_;
   private int           chordCurrent_;
 
+  int loops;
+
 
 
   /**
@@ -35,9 +37,10 @@ public class Piece
     this.lastPlayedTime_ = startTime;
     this.timeSignature_ = timeSignature;
     this.chords_ = chords;
-    this.beatCurrent_ = 0;
+    this.beatCurrent_ = -1;
     this.chordCurrent_ = 0;
     this.onBeat_ = false;
+    this.loops = 0;
   }
 
 
@@ -65,6 +68,7 @@ public class Piece
         if (chordCurrent_ >= chords_.length)
         {
           chordCurrent_ = 0;
+          loops++;
         }
       }
       onBeat_ = true;
@@ -101,29 +105,54 @@ public class Piece
 
   public boolean playNote(MidiChannel[] midiChannels, int volume, Random random)
   {
-    Chord currentChord = chords_[chordCurrent_];
-    if (beatCurrent_ == 0)
+    if(loops > 3)
     {
+      midiChannels[0].allNotesOff();
       midiChannels[1].allNotesOff();
-      for (int i = 0; i < currentChord.getChordLength(); i++)
-      {
-        midiChannels[1].noteOn(currentChord.getInterval(i), volume * 3 / 4);
-      }
+      return false;
     }
+    Chord currentChord = chords_[chordCurrent_];
 
+    // Melody
     if (random.nextDouble() <= (double) 0.9 /
         timeSignature_.getNoteValue(beatCurrent_))
     {
       midiChannels[0].allNotesOff();
-      int octRange = 2;
+      int octRange = 3;
 
       int note = currentChord
           .getInterval(random.nextInt(currentChord.getChordLength()));
       note += 12 * random.nextInt(octRange);
 
-      midiChannels[0].noteOn(note,
+      midiChannels[0].noteOn(note - 12,
           10 + volume - timeSignature_.getNoteValue(beatCurrent_));
     }
+
+    // Accompaniment
+    if (beatCurrent_ == 0 && loops > 0)
+    {
+      midiChannels[1].allNotesOff();
+      for (int i = 0; i < currentChord.getChordLength(); i++)
+      {
+        midiChannels[1].noteOn(currentChord.getInterval(i) - 12,
+            volume * 3 / 4);
+      }
+    }
+
+    // Drums
+    if (loops > 1)
+    {
+      midiChannels[9].noteOn(42, volume);
+      if (beatCurrent_ == 0)
+      {
+        midiChannels[9].noteOn(36, volume);
+      }
+      if (beatCurrent_ == timeSignature_.getNoteValuesLength() / 2)
+      {
+        midiChannels[9].noteOn(40, volume);
+      }
+    }
+
     return true;
   }
 

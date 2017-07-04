@@ -47,13 +47,12 @@ public class WhiteNoise
 
   // int instrID = 11;
   int instrBank = 1024;
-  int instrID = 80;
+  int instrID   = 80;
 
   final static int[] TIME_SIGNATURE_FOUR_FOUR =
       { 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4, 1, 4, 8, 4 };
-  final static int[] TIME_SIGNATURE_FUNK     =
-      { 1, 0, 2, 1, 0, 3};
-  final static int[] TIME_SIGNATURE_SWING   = { 1, 0, 2, 1, 0, 3 };
+  final static int[] TIME_SIGNATURE_FUNK      = { 1, 0, 2, 1, 0, 3 };
+  final static int[] TIME_SIGNATURE_SWING     = { 1, 0, 2, 1, 0, 3 };
   final static int[] TIME_SIGNATURE_CANON     = { 1, 8, 4, 8, 2, 8, 4, 8 };
 
   final static Chord[] CHORDS_FRUN = { new Chord(69, new int[] { 0, 4, 7 }),
@@ -153,9 +152,15 @@ public class WhiteNoise
       System.out.println("Setting instruments.");
       for (int i = 0; i < midiChannels_.length; i++)
       {
+
         midiChannels_[i].programChange(instrBank, instrID);
         midiChannels_[i].setMono(false);
+        if (i == 9)
+        {
+          midiChannels_[i].programChange(0, 0);
+        }
       }
+      midiChannels_[0].programChange(0, 11);
       System.out.println("\tlets make some noise");
     }
     catch (MidiUnavailableException e1)
@@ -180,11 +185,14 @@ public class WhiteNoise
 
       if (piece.getBeat() != 0)
       {
-        //if (rng.nextDouble() < 0.9 / (piece.getBeat()))
-        //{
-          //playNote(0);
-        //}
-        piece.playNote(midiChannels_, volume, rng);
+        // if (rng.nextDouble() < 0.9 / (piece.getBeat()))
+        // {
+        // playNote(0);
+        // }
+        if(!piece.playNote(midiChannels_, volume, rng))
+        {
+          break;
+        }
       }
 
       currentFPS = (int) Math
@@ -229,6 +237,7 @@ public class WhiteNoise
    *
    * @param id MIDI Channel to play note in.
    */
+  @Deprecated
   private void playNote(int id)
   {
     midiChannels_[id].allNotesOff();
@@ -238,7 +247,7 @@ public class WhiteNoise
     note += 12 * rng.nextInt(octRange);
 
     midiChannels_[id].noteOn(note, volume);
-    midiChannels_[id].noteOn(note + 7, volume/2);
+    midiChannels_[id].noteOn(note + 7, volume / 2);
 
     if (midiChannels_[id].getProgram() != instrID)
     {
