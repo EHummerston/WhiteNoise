@@ -175,7 +175,7 @@ public class WhiteNoise
 
     boolean loop = true;
 
-    this.changeToCanon();
+    this.changeToMablas();
 
     System.out.println("Begin Main Loop");
     while (loop)
@@ -185,11 +185,7 @@ public class WhiteNoise
 
       if (piece.getBeat() != 0)
       {
-        // if (rng.nextDouble() < 0.9 / (piece.getBeat()))
-        // {
-        // playNote(0);
-        // }
-        if(!piece.playNote(midiChannels_, volume, rng))
+        if (!piece.playBeat(midiChannels_, volume, rng))
         {
           break;
         }
@@ -226,34 +222,6 @@ public class WhiteNoise
       }
     }
     System.out.println("Closing.");
-
-  }
-
-
-
-  /**
-   * Plays a note in the specified channel, and creates a visual {@link Ripple}.
-   * Randomly chooses pitch based on active {@link Chord}.
-   *
-   * @param id MIDI Channel to play note in.
-   */
-  @Deprecated
-  private void playNote(int id)
-  {
-    midiChannels_[id].allNotesOff();
-    int octRange = 3;
-    Chord chord = piece.getChord();
-    int note = chord.getInterval(rng.nextInt(chord.getChordLength()));
-    note += 12 * rng.nextInt(octRange);
-
-    midiChannels_[id].noteOn(note, volume);
-    midiChannels_[id].noteOn(note + 7, volume / 2);
-
-    if (midiChannels_[id].getProgram() != instrID)
-    {
-      System.out.println("HONK channel" + id + " Instrument: " +
-          midiChannels_[id].getProgram());
-    }
 
   }
 

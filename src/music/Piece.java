@@ -103,9 +103,25 @@ public class Piece
 
 
 
-  public boolean playNote(MidiChannel[] midiChannels, int volume, Random random)
+  /**
+   * Plays notes to the supplied MIDI synthesizer channels, based on the current
+   * position within the {@link ChordProgression} and {@link TimeSignature}.
+   * Randomly chooses melody pitch based on active {@link Chord}.
+   *
+   * @param midiChannels MIDI Synthesizer Channels to play notes to. <br />
+   *          Channels used:
+   *          <ol start="0">
+   *          <li>Melody</li>
+   *          <li>Chord Accompaniment</li>
+   *          <li value="9">Percussion</li>
+   *          </ol>
+   * @param volume MIDI Channel to play note in.
+   * @param random {@link Random} to use for determining if and what notes to
+   *          play in the melody.
+   */
+  public boolean playBeat(MidiChannel[] midiChannels, int volume, Random random)
   {
-    if(loops > 3)
+    if (loops > 3)
     {
       midiChannels[0].allNotesOff();
       midiChannels[1].allNotesOff();
@@ -124,7 +140,7 @@ public class Piece
           .getInterval(random.nextInt(currentChord.getChordLength()));
       note += 12 * random.nextInt(octRange);
 
-      midiChannels[0].noteOn(note - 12,
+      midiChannels[0].noteOn(note,
           10 + volume - timeSignature_.getNoteValue(beatCurrent_));
     }
 
@@ -137,6 +153,7 @@ public class Piece
         midiChannels[1].noteOn(currentChord.getInterval(i) - 12,
             volume * 3 / 4);
       }
+      System.out.println("\t" + Chord.intToNote(currentChord.getInterval(0)));
     }
 
     // Drums
