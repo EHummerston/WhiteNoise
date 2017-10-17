@@ -2,7 +2,10 @@ package music;
 
 import java.util.Random;
 
-import javax.sound.midi.MidiChannel;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 
 /**
  * {@code Piece} is the managing class for chord progressions, tempos and
@@ -55,28 +58,21 @@ public class Piece
    */
   public void setTime(double currentTime)
   {
-    double tempoClock = timeSignature_.getNanoDuration();
-    double noteDue = (lastPlayedTime_ + tempoClock) - currentTime;
-    if (noteDue <= 0)
+
+    lastPlayedTime_ = currentTime;
+    beatCurrent_++;
+    if (beatCurrent_ >= timeSignature_.getNoteValuesLength())
     {
-      lastPlayedTime_ += tempoClock;
-      beatCurrent_++;
-      if (beatCurrent_ >= timeSignature_.getNoteValuesLength())
+      beatCurrent_ = 0;
+      chordCurrent_++;
+      if (chordCurrent_ >= chords_.length)
       {
-        beatCurrent_ = 0;
-        chordCurrent_++;
-        if (chordCurrent_ >= chords_.length)
-        {
-          chordCurrent_ = 0;
-          loops++;
-        }
+        chordCurrent_ = 0;
+        loops++;
       }
-      onBeat_ = true;
     }
-    else
-    {
-      onBeat_ = false;
-    }
+    onBeat_ = true;
+
   }
 
 
@@ -118,55 +114,54 @@ public class Piece
    * @param volume MIDI Channel to play note in.
    * @param random {@link Random} to use for determining if and what notes to
    *          play in the melody.
+   * @throws InvalidMidiDataException
    */
-  public boolean playBeat(MidiChannel[] midiChannels, int volume, Random random)
+  public boolean playBeat(Track track, int volume, Random random)
+      throws InvalidMidiDataException
   {
     if (loops > 3)
     {
-      midiChannels[0].allNotesOff();
-      midiChannels[1].allNotesOff();
       return false;
     }
+
     Chord currentChord = chords_[chordCurrent_];
 
     // Melody
     if (random.nextDouble() <= (double) 0.9 /
         timeSignature_.getNoteValue(beatCurrent_))
     {
-      midiChannels[0].allNotesOff();
+
       int octRange = 3;
 
       int note = currentChord
           .getInterval(random.nextInt(currentChord.getChordLength()));
       note += 12 * random.nextInt(octRange);
-
-      midiChannels[0].noteOn(note,
-          10 + volume - timeSignature_.getNoteValue(beatCurrent_));
+      track.add(getEvent(0, note, 10 + volume));
     }
 
     // Accompaniment
     if (beatCurrent_ == 0 && loops > 0)
     {
-      midiChannels[1].allNotesOff();
+
       for (int i = 0; i < currentChord.getChordLength(); i++)
       {
-        midiChannels[1].noteOn(currentChord.getInterval(i) - 12,
-            volume * 3 / 4);
+        track
+            .add(getEvent(1, currentChord.getInterval(i) - 12, volume * 3 / 4));
       }
-      System.out.println("\t" + Chord.intToNote(currentChord.getInterval(0)));
     }
 
     // Drums
     if (loops > 1)
     {
-      midiChannels[9].noteOn(42, volume);
+      track.add(getEvent(9, 42, volume));
+
       if (beatCurrent_ == 0)
       {
-        midiChannels[9].noteOn(36, volume);
+        track.add(getEvent(9, 36, volume));
       }
       if (beatCurrent_ == timeSignature_.getNoteValuesLength() / 2)
       {
-        midiChannels[9].noteOn(40, volume);
+        track.add(getEvent(9, 40, volume));
       }
     }
 
@@ -212,4 +207,13 @@ public class Piece
     return chordCurrent_;
   }
 
+
+
+  private MidiEvent getEvent(int channel, int pitch, int volume)
+      throws InvalidMidiDataException
+  {
+    ShortMessage msg = new ShortMessage();
+    msg.setMessage(ShortMessage.NOTE_ON, channel, pitch, volume);
+    return new MidiEvent(msg, (long) lastPlayedTime_);
+  }
 }

@@ -1,15 +1,18 @@
 package music;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-import javax.sound.midi.Instrument;
-import javax.sound.midi.MidiChannel;
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Synthesizer;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Track;
 
 import visuals.Rain;
-import visuals.Ripple;
 
 /**
  * The White Noise program is an experimental system for generating random
@@ -26,22 +29,21 @@ public class WhiteNoise
   boolean running = false;
   boolean paused  = false;
 
-  public int screenWidth = 1280, screenHeight = 720;
-
   Piece piece;
 
-  private Synthesizer   synthesizer_;
-  private MidiChannel[] midiChannels_;
+  private Sequencer sequencer_;
+  private Sequence  sequence_;
+  private Track     track_;
 
   int     currentFPS;
   boolean drawFPS = false;
 
-  public final static double TARGET_FPS                  = 100;
-  public final static double TARGET_TIME_BETWEEN_UPDATES =
-      1000000000 / TARGET_FPS;
-  int                        frameCounter                = 0;
+  final static int  RESOLUTION       = 10;
+  final static int  BPM              = 240;
+  final static long TICKS_PER_SECOND = (long) (RESOLUTION * (BPM / 60.0));
+  final static long TICK_SIZE        = (long) (1.0 / TICKS_PER_SECOND);
 
-  int volume = 20;
+  int volume = 83;
 
   float helpAlpha = 1;
 
@@ -130,52 +132,21 @@ public class WhiteNoise
 
     try
     {
-      System.out.println("Retrieving MIDI synthesizer.");
-      synthesizer_ = MidiSystem.getSynthesizer();
-      System.out.println("Initialising it.");
-      synthesizer_.open();
-      System.out.println("Retrieving channels.");
-      midiChannels_ = synthesizer_.getChannels();
-      Instrument[] instr = synthesizer_.getAvailableInstruments();
-
-      StringBuilder sb = new StringBuilder();
-      String eol = System.getProperty("line.separator");
-      sb.append("The orchestra has " + instr.length + " instruments." + eol);
-      for (Instrument instrument : instr)
-      {
-        sb.append(instrument.toString());
-        sb.append(eol);
-      }
-      System.out.println(sb.toString());
-
-      synthesizer_.loadInstrument(instr[0]);
-      System.out.println("Setting instruments.");
-      for (int i = 0; i < midiChannels_.length; i++)
-      {
-
-        midiChannels_[i].programChange(instrBank, instrID);
-        midiChannels_[i].setMono(false);
-        if (i == 9)
-        {
-          midiChannels_[i].programChange(0, 0);
-        }
-      }
-      midiChannels_[0].programChange(0, 11);
-      System.out.println("\tlets make some noise");
+      sequence_ = new Sequence(Sequence.PPQ, RESOLUTION);
+      track_ = sequence_.createTrack();
     }
-    catch (MidiUnavailableException e1)
+    catch (InvalidMidiDataException e1)
     {
       e1.printStackTrace();
     }
 
     running = true;
 
-    double now = System.nanoTime();
-    double lastUpdateTime = System.nanoTime();
+    double now = RESOLUTION;
 
     boolean loop = true;
 
-    this.changeToMablas();
+    this.changeToCanon();
 
     System.out.println("Begin Main Loop");
     while (loop)
@@ -185,44 +156,70 @@ public class WhiteNoise
 
       if (piece.getBeat() != 0)
       {
-        if (!piece.playBeat(midiChannels_, volume, rng))
+        try
         {
+          if (!piece.playBeat(track_, volume, rng))
+          {
+            break;
+          }
+        }
+        catch (InvalidMidiDataException e)
+        {
+          e.printStackTrace();
           break;
         }
       }
 
-      currentFPS = (int) Math
-          .ceil(TARGET_TIME_BETWEEN_UPDATES * 10 / (now - lastUpdateTime));
-      if (frameCounter == TARGET_FPS)
-      {
+      now += RESOLUTION;
 
-        frameCounter = 0;
-      }
-      frameCounter++;
-
-      lastUpdateTime += TARGET_TIME_BETWEEN_UPDATES;
-
-      while (now - lastUpdateTime < TARGET_TIME_BETWEEN_UPDATES)
-      {
-        Thread.yield();
-
-        // This stops the app from consuming all your CPU. It makes this
-        // slightly less accurate, but is worth it.
-        // You can remove this line and it will still work (better),
-        // your CPU just climbs on certain OSes.
-        try
-        {
-          Thread.sleep(1);
-        }
-        catch (Exception e)
-        {}
-
-        loop = running;
-        now = System.nanoTime();
-      }
     }
-    System.out.println("Closing.");
 
+    try
+    {
+      DateTimeFormatter dtf =
+          DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+      LocalDateTime date = LocalDateTime.now();
+      String dateString = dtf.format(date);
+
+      System.out.println("bin/" + dateString + ".mid");
+
+      MidiSystem.write(sequence_, 0, new File("bin/" + dateString + ".mid"));
+    }
+    catch (IOException e1)
+    {
+      e1.printStackTrace();
+    }
+
+    System.out.println("Get default sequencer.");
+    try
+    {
+
+      sequencer_ = MidiSystem.getSequencer();
+
+      if (sequencer_ == null)
+      {
+        System.err.println("Error -- sequencer device is not supported.");
+        return;
+      }
+      System.out.println("\tAcquire resources and make operational.");
+      sequencer_.open();
+      sequencer_.setTempoInBPM(BPM);
+      sequencer_.setSequence(sequence_);
+      sequencer_.start();
+
+      while (sequencer_.isRunning())
+      {
+        System.out
+            .println((sequencer_.getTickPosition() / TICKS_PER_SECOND) + "s");
+        Thread.sleep(1000);
+      }
+
+      sequencer_.close();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
   }
 
 
@@ -236,7 +233,7 @@ public class WhiteNoise
   public void changeToFrun()
   {
     piece = new Piece(new TimeSignature(TIME_SIGNATURE_FOUR_FOUR, 4, 80),
-        CHORDS_FRUN, System.nanoTime());
+        CHORDS_FRUN, RESOLUTION);
   }
 
 
@@ -251,7 +248,7 @@ public class WhiteNoise
   public void changeToMablas()
   {
     piece = new Piece(new TimeSignature(TIME_SIGNATURE_FUNK, 2, 131),
-        CHORDS_MABLAS, System.nanoTime());
+        CHORDS_MABLAS, RESOLUTION);
 
   }
 
@@ -267,7 +264,7 @@ public class WhiteNoise
   {
 
     piece = new Piece(new TimeSignature(TIME_SIGNATURE_SWING, 2, 160),
-        CHORDS_WAY, System.nanoTime());
+        CHORDS_WAY, RESOLUTION);
   }
 
 
@@ -281,7 +278,7 @@ public class WhiteNoise
   public void changeToCanon()
   {
     piece = new Piece(new TimeSignature(TIME_SIGNATURE_CANON, 1, 30),
-        CHORDS_CANON, System.nanoTime());
+        CHORDS_CANON, RESOLUTION);
   }
 
 }
