@@ -35,17 +35,12 @@ public class WhiteNoise
   private Sequence  sequence_;
   private Track     track_;
 
-  int     currentFPS;
-  boolean drawFPS = false;
-
   final static int  RESOLUTION       = 10;
   final static int  BPM              = 240;
   final static long TICKS_PER_SECOND = (long) (RESOLUTION * (BPM / 60.0));
   final static long TICK_SIZE        = (long) (1.0 / TICKS_PER_SECOND);
 
-  int volume = 83;
-
-  float helpAlpha = 1;
+  final static int volume = 83;
 
   // int instrID = 11;
   int instrBank = 1024;

@@ -136,7 +136,7 @@ public class Piece
       int note = currentChord
           .getInterval(random.nextInt(currentChord.getChordLength()));
       note += 12 * random.nextInt(octRange);
-      track.add(getEvent(0, note, 10 + volume));
+      addNote(track, 0, note, 10 + volume, (long)lastPlayedTime_, 10);
     }
 
     // Accompaniment
@@ -215,5 +215,20 @@ public class Piece
     ShortMessage msg = new ShortMessage();
     msg.setMessage(ShortMessage.NOTE_ON, channel, pitch, volume);
     return new MidiEvent(msg, (long) lastPlayedTime_);
+  }
+
+
+
+  private void addNote(Track track, int channel, int pitch, int volume,
+      long startTick, long tickDuration)
+      throws InvalidMidiDataException
+  {
+    ShortMessage startMsg = new ShortMessage();
+    startMsg.setMessage(ShortMessage.NOTE_ON, channel, pitch, volume);
+    track.add(new MidiEvent(startMsg, startTick));
+
+    ShortMessage endMsg = new ShortMessage();
+    endMsg.setMessage(ShortMessage.NOTE_OFF, channel, pitch);
+    track.add(new MidiEvent(endMsg, startTick + tickDuration));
   }
 }
